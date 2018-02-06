@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const App = () => <h1>Here will be a TODO list</h1>;
+import Todo from './components/todo';
+
+const App = () =>
+    <div>
+        <h1>TODO list</h1>
+        <Todo />
+    </div>;
 
 ReactDOM.render(<App />, document.getElementById("app"));
