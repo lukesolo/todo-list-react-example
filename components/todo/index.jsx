@@ -22,7 +22,8 @@ class EditableTask extends PureComponent {
     }
 
     handleEdit () {
-        this.setState({edit: true});
+        const {title} = this.props.task;
+        this.setState({edit: true, title});
     }
 
     handleChange ({target: {value}}) {
@@ -37,8 +38,7 @@ class EditableTask extends PureComponent {
 
     handleSave () {
         const {title} = this.state;
-        const {index} = this.props;
-        this.props.onEdit(index, {title}, () => this.clear());
+        this.props.onEdit({title}, () => this.clear());
     }
 
     clear () {
@@ -66,7 +66,7 @@ const TodoList = ({tasks, onRemove, onComplete, onEdit}) =>
         {tasks.map((task, i) =>
             <ul key={i}>
                 <li>
-                    <EditableTask task={task} onEdit={onEdit} index={i} />
+                    <EditableTask task={task} onEdit={(...args) => onEdit(i, ...args)} />
                 </li>
                 <button onClick={() => onRemove(i)}>−</button>
                 <button onClick={() => onComplete(i)} disabled={task.complete}>✓</button>
