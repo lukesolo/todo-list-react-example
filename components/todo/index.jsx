@@ -141,6 +141,7 @@ class TodoContainer extends PureComponent {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleComplete = this.handleComplete.bind(this);
+        this.handleSort = this.handleSort.bind(this);
     }
 
     handleAdd (task, callback) {
@@ -169,11 +170,20 @@ class TodoContainer extends PureComponent {
         this.setState({tasks});
     }
 
+    handleSort (asc) {
+        const tasks = this.state.tasks.slice();
+        const sortNum = asc ? 1 : -1;
+        tasks.sort((t1, t2) => t1.title > t2.title ? sortNum : -sortNum);
+        this.setState({tasks});
+    }
+
     render () {
         const {tasks} = this.state;
 
         return (
             <div>
+                <button key='asc' onClick={() => this.handleSort(true)}>↓</button>
+                <button key='desc' onClick={() => this.handleSort(false)}>↑</button>
                 <TodoList
                     tasks={tasks}
                     onRemove={this.handleRemove}
