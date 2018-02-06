@@ -6,12 +6,57 @@ const Task = ({title, complete}) =>
         ? <s>{title}</s>
         : <span>{title}</span>
 
-const TodoList = ({tasks, onRemove, onComplete}) => 
+class EditableTask extends PureComponent {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            title: props.task.title,
+            edit: false,
+        }
+
+        this.handleEdit = this.handleEdit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+    }
+
+    handleEdit () {
+        this.setState({edit: true});
+    }
+
+    handleChange ({target: {value}}) {
+        this.setState({title: value});
+    }
+
+    handleSave () {
+        const {title} = this.state;
+        const {index} = this.props;
+        this.props.onEdit(index, {title}, () => this.clear());
+    }
+
+    clear () {
+        this.setState({edit: false});
+    }
+
+    render () {
+        const {title, edit} = this.state;
+
+        return edit
+            ? <input value={title} onChange={this.handleChange} onBlur={this.handleSave} />
+            : <span onClick={this.handleEdit}><Task {...this.props.task} /></span>;
+    }
+}
+
+EditableTask.propTypes = {
+    onEdit: PropTypes.func.isRequired,
+};
+
+const TodoList = ({tasks, onRemove, onComplete, onEdit}) => 
     <div>
         {tasks.map((task, i) =>
             <ul key={i}>
                 <li>
-                    <Task {...task} />
+                    <EditableTask task={task} onEdit={onEdit} index={i} />
                 </li>
                 <button onClick={() => onRemove(i)}>−</button>
                 <button onClick={() => onComplete(i)} disabled={task.complete}>✓</button>
@@ -74,6 +119,7 @@ class TodoContainer extends PureComponent {
         }
 
         this.handleAdd = this.handleAdd.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
         this.handleComplete = this.handleComplete.bind(this);
     }
@@ -84,6 +130,12 @@ class TodoContainer extends PureComponent {
             tasks.push(task);
             return {tasks};
         }, callback);
+    }
+
+    handleEdit (index, data, callback) {
+        const tasks = this.state.tasks.slice();
+        tasks[index] = Object.assign({}, tasks[index], data);
+        this.setState({tasks}, callback);
     }
 
     handleRemove (index) {
@@ -103,7 +155,11 @@ class TodoContainer extends PureComponent {
 
         return (
             <div>
-                <TodoList tasks={tasks} onRemove={this.handleRemove} onComplete={this.handleComplete} />
+                <TodoList
+                    tasks={tasks}
+                    onRemove={this.handleRemove}
+                    onComplete={this.handleComplete}
+                    onEdit={this.handleEdit} />
                 <NewTask onCreate={this.handleAdd} />
             </div>
         );
