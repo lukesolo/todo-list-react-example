@@ -17,6 +17,7 @@ class EditableTask extends PureComponent {
 
         this.handleEdit = this.handleEdit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleSave = this.handleSave.bind(this);
     }
 
@@ -26,6 +27,12 @@ class EditableTask extends PureComponent {
 
     handleChange ({target: {value}}) {
         this.setState({title: value});
+    }
+
+    handleKeyPress ({key}) {
+        if (key === 'Enter') {
+            this.handleSave();
+        }
     }
 
     handleSave () {
@@ -42,7 +49,10 @@ class EditableTask extends PureComponent {
         const {title, edit} = this.state;
 
         return edit
-            ? <input value={title} onChange={this.handleChange} onBlur={this.handleSave} />
+            ? <input type='text' value={title}
+                onChange={this.handleChange}
+                onBlur={this.handleSave}
+                onKeyPress={this.handleKeyPress} />
             : <span onClick={this.handleEdit}><Task {...this.props.task} /></span>;
     }
 }
@@ -78,11 +88,18 @@ class NewTask extends PureComponent {
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleCreate = this.handleCreate.bind(this);
     }
 
     handleChange ({target: {value}}) {
         this.setState({title: value});
+    }
+
+    handleKeyPress ({key}) {
+        if (key === 'Enter') {
+            this.handleCreate();
+        }
     }
 
     handleCreate () {
@@ -99,7 +116,9 @@ class NewTask extends PureComponent {
 
         return (
             <div>
-                <input type='text' onChange={this.handleChange} value={title} />
+                <input type='text' value={title}
+                    onChange={this.handleChange}
+                    onKeyPress={this.handleKeyPress} />
                 <button onClick={this.handleCreate}>Добавить</button>
             </div>
         );
