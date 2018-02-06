@@ -6,6 +6,9 @@ module.exports = {
         path: __dirname + '/public',
         filename: 'bundle.js',
     },
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
     module: {
         loaders: [
             {
