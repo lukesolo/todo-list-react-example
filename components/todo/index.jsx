@@ -1,15 +1,29 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
-const TodoList = ({tasks}) => 
+const Task = ({title, complete}) =>
+    complete
+        ? <s>{title}</s>
+        : <span>{title}</span>
+
+const TodoList = ({tasks, onRemove, onComplete}) => 
     <div>
         {tasks.map((task, i) =>
             <ul key={i}>
-                <li>{task.title}</li>
+                <li>
+                    <Task {...task} />
+                </li>
+                <button onClick={() => onRemove(i)}>−</button>
+                <button onClick={() => onComplete(i)} disabled={task.complete}>✓</button>
             </ul>
         )}
     </div>
 
+TodoList.propTypes = {
+    onRemove: PropTypes.func.isRequired,
+    onComplete: PropTypes.func.isRequired,
+};
+    
 class NewTask extends PureComponent {
     constructor(props) {
         super(props);
@@ -60,6 +74,8 @@ class TodoContainer extends PureComponent {
         }
 
         this.handleAdd = this.handleAdd.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
+        this.handleComplete = this.handleComplete.bind(this);
     }
 
     handleAdd (task, callback) {
@@ -70,12 +86,24 @@ class TodoContainer extends PureComponent {
         }, callback);
     }
 
+    handleRemove (index) {
+        const tasks = this.state.tasks.slice();
+        tasks.splice(index, 1);
+        this.setState({tasks});
+    }
+
+    handleComplete (index) {
+        const tasks = this.state.tasks.slice();
+        tasks[index] = Object.assign({}, tasks[index], {complete: true});
+        this.setState({tasks});
+    }
+
     render () {
         const {tasks} = this.state;
 
         return (
             <div>
-                <TodoList tasks={tasks} />
+                <TodoList tasks={tasks} onRemove={this.handleRemove} onComplete={this.handleComplete} />
                 <NewTask onCreate={this.handleAdd} />
             </div>
         );
