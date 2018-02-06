@@ -134,7 +134,7 @@ class TodoContainer extends PureComponent {
         super(props);
 
         this.state = {
-            tasks: [],
+            tasks: props.tasks,
         }
 
         this.handleAdd = this.handleAdd.bind(this);
@@ -145,7 +145,7 @@ class TodoContainer extends PureComponent {
     }
 
     handleAdd (task, callback) {
-        this.setState(prev => {
+        this.change(prev => {
             const tasks = prev.tasks.slice();
             tasks.push(task);
             return {tasks};
@@ -155,26 +155,31 @@ class TodoContainer extends PureComponent {
     handleEdit (index, data, callback) {
         const tasks = this.state.tasks.slice();
         tasks[index] = Object.assign({}, tasks[index], data);
-        this.setState({tasks}, callback);
+        this.change({tasks}, callback);
     }
 
     handleRemove (index) {
         const tasks = this.state.tasks.slice();
         tasks.splice(index, 1);
-        this.setState({tasks});
+        this.change({tasks});
     }
 
     handleComplete (index) {
         const tasks = this.state.tasks.slice();
         tasks[index] = Object.assign({}, tasks[index], {complete: true});
-        this.setState({tasks});
+        this.change({tasks});
     }
 
     handleSort (asc) {
         const tasks = this.state.tasks.slice();
         const sortNum = asc ? 1 : -1;
         tasks.sort((t1, t2) => t1.title > t2.title ? sortNum : -sortNum);
-        this.setState({tasks});
+        this.change({tasks});
+    }
+
+    change (newState, callback) {
+        const {onChange} = this.props;
+        this.setState(newState, () => onChange && onChange(this.state.tasks) || callback && callback())
     }
 
     render () {
@@ -194,5 +199,14 @@ class TodoContainer extends PureComponent {
         );
     }
 }
+
+TodoContainer.defaultProps = {
+    tasks: [],
+};
+
+TodoContainer.propTypes = {
+    tasks: PropTypes.arrayOf(PropTypes.object),
+    onChange: PropTypes.func,
+};
 
 export default TodoContainer;
