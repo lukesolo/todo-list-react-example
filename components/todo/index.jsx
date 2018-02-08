@@ -197,6 +197,7 @@ class TodoContainer extends PureComponent {
 
         return (
             <div>
+                <p>You can click task's title to edit.</p>
                 <Sorter onSort={this.handleSort} />
                 <TodoList
                     tasks={tasks}
