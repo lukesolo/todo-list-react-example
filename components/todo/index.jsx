@@ -146,8 +146,7 @@ class TodoContainer extends PureComponent {
 
     handleAdd (task, callback) {
         this.change(prev => {
-            const tasks = prev.tasks.slice();
-            tasks.push(task);
+            const tasks = prev.tasks.concat(task);
             return {tasks};
         }, callback);
     }
@@ -159,8 +158,8 @@ class TodoContainer extends PureComponent {
     }
 
     handleRemove (index) {
-        const tasks = this.state.tasks.slice();
-        tasks.splice(index, 1);
+        const origTasks = this.state.tasks;
+        const tasks = origTasks.slice(0, index).concat(origTasks.slice(index + 1));
         this.change({tasks});
     }
 
