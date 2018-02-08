@@ -132,6 +132,14 @@ NewTask.propTypes = {
     onCreate: PropTypes.func.isRequired,
 };
 
+const Sorter = ({onSort}) =>
+    <div>
+        sort by title
+        {' '}
+        <button key='asc' onClick={() => onSort('asc')}>↓</button>
+        <button key='desc' onClick={() => onSort('desc')}>↑</button>
+    </div>;
+
 class TodoContainer extends PureComponent {
     constructor(props) {
         super(props);
@@ -172,9 +180,9 @@ class TodoContainer extends PureComponent {
         this.change({tasks});
     }
 
-    handleSort (asc) {
+    handleSort (direction) {
         const tasks = this.state.tasks.slice();
-        const sortNum = asc ? 1 : -1;
+        const sortNum = direction === 'asc' ? 1 : -1;
         tasks.sort((t1, t2) => t1.title > t2.title ? sortNum : -sortNum);
         this.change({tasks});
     }
@@ -189,8 +197,7 @@ class TodoContainer extends PureComponent {
 
         return (
             <div>
-                <button key='asc' onClick={() => this.handleSort(true)}>↓</button>
-                <button key='desc' onClick={() => this.handleSort(false)}>↑</button>
+                <Sorter onSort={this.handleSort} />
                 <TodoList
                     tasks={tasks}
                     onRemove={this.handleRemove}
