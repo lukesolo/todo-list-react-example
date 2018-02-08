@@ -68,8 +68,8 @@ const TodoList = ({tasks, onRemove, onComplete, onEdit}) =>
                 <li>
                     <EditableTask task={task} onEdit={(...args) => onEdit(i, ...args)} />
                 </li>
-                <button onClick={() => onRemove(i)}>−</button>
                 <button onClick={() => onComplete(i)} disabled={task.complete}>✓</button>
+                <button onClick={() => onRemove(i)}>✗</button>
             </ul>
         )}
     </div>
