@@ -104,6 +104,9 @@ class NewTask extends PureComponent {
 
     handleCreate () {
         const {title} = this.state;
+        if (!title) {
+            return;
+        }
         this.props.onCreate({title}, () => this.clear());
     }
 
@@ -119,7 +122,7 @@ class NewTask extends PureComponent {
                 <input type='text' value={title}
                     onChange={this.handleChange}
                     onKeyPress={this.handleKeyPress} />
-                <button onClick={this.handleCreate}>Добавить</button>
+                <button onClick={this.handleCreate} disabled={!title}>Create!</button>
             </div>
         );
     }
